@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum Role {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  profile   Profile?
+  sales     Sale[]
+  logs      AuditLog[]
+}
+
+model Profile {
+  id           String  @id @default(uuid())
+  firstName    String
+  lastName     String
+  phoneNumber  String?
+  gender       String?
+  
+  // Link to User
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String  @unique // unique ensures 1:1
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id                String   @id @default(uuid())
+  name              String
+  sku               String   @unique // Stock Keeping Unit
+  description       String?
+  sellingPrice      Float
+  stockCount        Int      @default(0)
+  lowStockThreshold Int      @default(5)
+
+  // Relationships
+  category          Category @relation(fields: [categoryId], references: [id])
+  categoryId        String
+  saleItems         SaleItem[]
+}
+
+model PaymentMethod{
+  id String @id @default(uuid())
+  paymentMethod String
+  sales Sale[]
+}
+
+model Sale {
+  id                String   @id @default(uuid())
+  totalAmount      Float
+
+  // Relationships
+  paymentMethod    PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId        String
+  user             User @relation(fields: [userId], references: [id])
+  userId           String
+  saleItems        SaleItem[]
+}
+
+model SaleItem {
+  id                String   @id @default(uuid())
+  quantity          Int      @default(0)
+  unitPrice         Float      
+
+  // Relationships
+  product          Product @relation(fields: [productId], references: [id])
+  productId        String
+  sale             Sale @relation(fields: [saleId], references: [id])
+  saleId           String
+}
+
+
+
+model AuditLog {
+  id                String   @id @default(uuid())
+  details           String
+  timestamp         DateTime  
+
+  // Relationships
+  auditAction      AuditAction @relation(fields: [auditActionId], references: [id])
+  auditActionId    String
+  user             User @relation(fields: [userId], references: [id])
+  userId           String
+}
+
+model AuditAction{
+  id String @id @default(uuid())
+  Action String
+  audits AuditLog[]
+}
