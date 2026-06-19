@@ -97,7 +97,7 @@ model SaleItem {
 model AuditLog {
   id                String   @id @default(uuid())
   details           String
-  timestamp         DateTime  
+  timestamp         DateTime  @default(now())
 
   // Relationships
   auditAction      AuditAction @relation(fields: [auditActionId], references: [id])
