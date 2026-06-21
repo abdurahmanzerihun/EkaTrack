@@ -1,4 +1,3 @@
-import { prisma } from "../lib/prisma";
 import { Request,Response,NextFunction } from "express";
 import  jwt  from "jsonwebtoken";
 import { Role } from "../generated/prisma/enums";
@@ -8,7 +7,6 @@ interface CustomJwtPayload{
         role:Role,
         username:string
 }
-
 export const authenticateUser=(req:Request,res:Response,next:NextFunction) =>{
 try{
         const header=req.headers.authorization;
@@ -17,7 +15,7 @@ try{
         return;
 
 }
-
+//split the header like ["Bearer","the token"] and take the the one with index 1 
 const token=header.split(" ")[1];
 const JWT_SECRET=process.env.JWT_SECRET;
 if(!JWT_SECRET){
@@ -34,6 +32,26 @@ catch(error){
 }
 
 }
-export const authorizeUser=(req:Request,res:Response)=>{
+
+export const authorizeUser=(...allowedRoles:Role[])=>{
+return (req:Request,res:Response,next:NextFunction)=>{
+        try{
+         const userRole=req.user?.role;
+         if(!userRole ){
+                res.status(401).json({message:"Unauthorized: Role Missing"});
+                return;
+         }
+      if(!allowedRoles.includes(userRole)){
+       res.status(403).json({message:"Error: Role not allowed"});
+       return;
+}
+next();
+
+}catch(error){
+               next(error);
+        }
+
+
+}
 
 }
