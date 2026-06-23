@@ -39,7 +39,7 @@ async function main() {
   const adminUser = await prisma.user.create({
     data: {
       username: 'superadmin',
-      email: 'admin@electronicshop.com',
+      email: 'admin@ekatrack.com',
       password: hashedPassword,
       role: Role.ADMIN,
       profile: {
@@ -65,7 +65,7 @@ async function main() {
   console.log('Seeding completed successfully!');
   console.log(`
     Admin Credentials:
-   Email:    admin@electronicshop.com
+   Email:    admin@ekatrack.com
    Password: Admin@2026
   `);
 }
