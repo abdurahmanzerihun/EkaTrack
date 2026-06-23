@@ -1,9 +1,7 @@
 import { Request,Response,NextFunction } from "express";
 import { prisma } from "../lib/prisma";
-import { compare } from "bcrypt";
 import crypto from "crypto";
 import jwt  from "jsonwebtoken";
-import { Role } from "../generated/prisma/enums";
 import bcrypt from 'bcrypt';
 
 
@@ -13,7 +11,7 @@ export const login=async(req:Request,res:Response,next:NextFunction): Promise<vo
 
 //validate email 
 if(!email || !password){
-        res.status(400).json({message:"The email and password fields are required"});
+        res.status(401).json({message:"The email and password fields are required"});
         return;
 }
 const user=await prisma.user.findUnique({
