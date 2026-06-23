@@ -40,13 +40,16 @@ model Profile {
   gender       String?
   
   // Link to User
-  user         User    @relation(fields: [userId], references: [id])
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String  @unique // unique ensures 1:1
 }
 
 model Category {
   id       String    @id @default(uuid())
   name     String    @unique
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   products Product[]
 }
 
@@ -58,6 +61,8 @@ model Product {
   sellingPrice      Float
   stockCount        Int      @default(0)
   lowStockThreshold Int      @default(5)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relationships
   category          Category @relation(fields: [categoryId], references: [id])
@@ -105,7 +110,7 @@ model AuditLog {
   // Relationships
   auditAction      AuditAction @relation(fields: [auditActionId], references: [id])
   auditActionId    String
-  user             User @relation(fields: [userId], references: [id])
+  user             User @relation(fields: [userId], references: [id],onDelete: Cascade)
   userId           String
 }
 
