@@ -1,19 +1,21 @@
 import express,{Request,Response,NextFunction} from 'express';
+import { Role } from './generated/prisma/enums';
 const app =express();
 const PORT=process.env.PORT||4000;
 
 //import routes
 import authRoutes from './routes/authRoutes';
+import categoryRoutes from './routes/categoryRoutes';
+
 
 //middlewares
 app.use(express.json());
 
 
 app.use('/api/auth/',authRoutes);
-app.get('/',(req:Request,res:Response)=>{
-        res.send("The shop server is working ");
-        
-});
+app.use('/api/auth/',authRoutes);
+app.use('/api/category',categoryRoutes);
+app.use('/api/category',categoryRoutes);
 
 //async catch
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
