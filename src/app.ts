@@ -4,8 +4,8 @@ const app =express();
 const PORT=process.env.PORT||4000;
 
 //import routes
-import authRoutes from './routes/authRoutes';
-import categoryRoutes from './routes/categoryRoutes';
+import authRoutes from './routes/auth-routes';
+import categoryRoutes from './routes/category-routes';
 
 
 //middlewares
