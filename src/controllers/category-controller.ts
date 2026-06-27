@@ -4,19 +4,9 @@ import { prisma } from "../lib/prisma";
 export const createCategory=async(req:Request,res:Response,next:NextFunction):Promise<void> =>{
         try{
          let{name,description}=req.body;
-         //Checking if the name is string 
-        if(typeof(name)!=="string"){
-                res.status(400).json({message:"The name field can only be string"});
-                return;
-        }
-        //ensuring the name field is not empty string or just space 
-        if(!name.trim()){
-               res.status(400).json({message:"The category name is required"});
-                return;  
-        }
         const existingName=await prisma.category.findUnique({
                 where:{
-                        name:name.trim()
+                        name
                 }
         });
         if(existingName){
@@ -26,7 +16,7 @@ export const createCategory=async(req:Request,res:Response,next:NextFunction):Pr
 
         const newCategory=await prisma.category.create({
                 data:{
-                        name:name.trim(),
+                        name:name,
                         description:description? description:null
 
                 }
@@ -45,11 +35,14 @@ export const createCategory=async(req:Request,res:Response,next:NextFunction):Pr
         }
 }
 
+//getting all categories excluding those deleted
 export const getCategory=async(req:Request,res:Response,next:NextFunction):Promise<void> =>{
         try{
  const currentCategories=await prisma.category.findMany({
         where:{
                 isDeleted:false
+        },include:{
+                products:true
         },
                 orderBy:{
                         createdAt:'desc'
@@ -65,10 +58,7 @@ export const getCategory=async(req:Request,res:Response,next:NextFunction):Promi
 export const updateCategory=async(req:Request,res:Response,next:NextFunction):Promise<void> =>{
         try{
  let {name,description}=req.body;
-         if(!name){
-                res.status(400).json({message:"Name of the category is required "});
-                return ;
-        }
+        
 //check if the cateory exists first
         const existingCategory=await prisma.category.findUnique({
                 where:{
@@ -79,10 +69,10 @@ export const updateCategory=async(req:Request,res:Response,next:NextFunction):Pr
                 res.status(404).json({message:"The category is not found"});
                 return;
         }
-        if(name.trim()!==existingCategory.name){
+        if(name!==existingCategory.name){
                 const nameConflict=await prisma.category.findUnique({
                         where:{
-                                name:name.trim()
+                                name
                         }
                 });
                 if(nameConflict){
@@ -98,7 +88,7 @@ export const updateCategory=async(req:Request,res:Response,next:NextFunction):Pr
                         id:req.params.id as string    
                 },
                 data:{
-                        name:name.trim(),
+                        name:name,
                         description:description? description:null
                 }
         });
