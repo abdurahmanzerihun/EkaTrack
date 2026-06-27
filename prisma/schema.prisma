@@ -62,6 +62,7 @@ model Product {
   sellingPrice      Float
   stockCount        Int      @default(0)
   lowStockThreshold Int      @default(5)
+  isDeleted         Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
