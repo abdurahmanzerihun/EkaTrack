@@ -1,5 +1,4 @@
-import { TypeOf, z } from "zod";
-import { PaymentMethodScalarFieldEnum } from "../generated/prisma/internal/prismaNamespaceBrowser";
+import { z } from "zod";
 
 export const productBaseSchema=z.object({
        
