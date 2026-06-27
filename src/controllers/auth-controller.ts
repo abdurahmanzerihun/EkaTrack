@@ -9,11 +9,6 @@ export const login=async(req:Request,res:Response,next:NextFunction): Promise<vo
         try{
            const{email,password}=req.body;
 
-//validate email 
-if(!email || !password){
-        res.status(401).json({message:"The email and password fields are required"});
-        return;
-}
 const user=await prisma.user.findUnique({
         where:{
                 email
@@ -67,30 +62,10 @@ export const registerStaff=async (req:Request,res:Response,next:NextFunction):Pr
 
 try{
         const {firstName ,lastName,phoneNumber,gender,email,role}=req.body;
-//validating the req.body
-
- if(!firstName || !lastName){
-        res.status(400).json({message:"First Name or LastName field missing"});
-        return;
-}
-        if(!email || !role){
-                res.status(400).json({message:"Email or Role field missing"})
-                return ;
-        }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if(!emailRegex.test(email)){
-                res.status(400).json({message:"The email is invalid"});
-                return ;
-        }
-
-        //checking if the email already exists 
-
-        const normalizedEmail=email.toLowerCase().trim();
 
         const existingUser=await prisma.user.findUnique({
                 where:{
-                        email:normalizedEmail
+                        email
                 }
         });
         if(existingUser){
@@ -100,7 +75,6 @@ try{
 
 //temporary password and username generations
         const OTP=crypto.randomBytes(4).toString("hex");
-        console.log(`OTP:${OTP}`);
         const hashedPassword=await bcrypt.hash(OTP,10);
         const prefix=email.split('@')[0];
         const generatedUsername=`${prefix}_${crypto.randomBytes(2).toString("hex")}`;
@@ -109,7 +83,7 @@ try{
 const result=await prisma.$transaction(async(tx)=>{
     const staffAccount=await tx.user.create({
                 data:{
-                   email:normalizedEmail,
+                   email,
                    username:generatedUsername,
                    role,
                    firstLogin:true,
@@ -144,3 +118,5 @@ const result=await prisma.$transaction(async(tx)=>{
         next(error);
 }
 }
+
+
