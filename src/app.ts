@@ -6,6 +6,7 @@ const PORT=process.env.PORT||4000;
 //import routes
 import authRoutes from './routes/auth-routes';
 import categoryRoutes from './routes/category-routes';
+import productRoutes from './routes/product-routes';
 
 
 //middlewares
@@ -14,8 +15,8 @@ app.use(express.json());
 
 app.use('/api/auth/',authRoutes);
 app.use('/api/auth/',authRoutes);
-app.use('/api/category',categoryRoutes);
-app.use('/api/category',categoryRoutes);
+app.use('/api/categories',categoryRoutes);
+app.use('/api/products',productRoutes);
 
 //async catch
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
