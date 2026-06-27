@@ -14,6 +14,11 @@ enum Role {
   STAFF
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 model User {
   id        String   @id @default(uuid())
   username  String   @unique
@@ -37,7 +42,7 @@ model Profile {
   firstName    String
   lastName     String
   phoneNumber  String?
-  gender       String?
+  gender       Gender?
   
   // Link to User
   user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
