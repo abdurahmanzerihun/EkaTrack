@@ -1,5 +1,4 @@
 import express,{Request,Response,NextFunction} from 'express';
-import { Role } from './generated/prisma/enums';
 const app =express();
 const PORT=process.env.PORT||4000;
 

@@ -33,6 +33,7 @@ catch(error){
 
 }
 
+//authorization
 export const authorizeUser=(...allowedRoles:Role[])=>{
 return (req:Request,res:Response,next:NextFunction)=>{
         try{
